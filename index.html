@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Malla Interactiva Veterinaria USS</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #eef2f3; }
+    h1, h2 { color: #2c3e50; }
+    .semestre { margin-top: 30px; }
+    .curso {
+      background: #fff;
+      border-left: 6px solid #3498db;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 5px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .bloqueado { opacity: 0.5; pointer-events: none; }
+    input[type="checkbox"] { margin-right: 8px; }
+    label { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>🐾 Malla Interactiva Medicina Veterinaria - USS</h1>
+  <p>Marca los ramos 🎓</p>
+  <div id="contenedor"></div>
+
+  <script>
+    const cursos = [
+      { codigo: "ASIGESAP01", nombre: "Estrategias para el Aprendizaje", semestre: 1, requisitos: [] },
+      { codigo: "DBIO1069", nombre: "🔬🥼Biología Celular", semestre: 1, requisitos: [] },
+      { codigo: "DMAEM001", nombre: "➗Matemática", semestre: 1, requisitos: [] },
+      { codigo: "DQUI1035", nombre: "🧪Química General y Orgánica", semestre: 1, requisitos: [] },
+      { codigo: "MEVE0120", nombre: "Orientación Profesional", semestre: 1, requisitos: [] },
+      { codigo: "MEVE0002", nombre: "⚛️Física Médica", semestre: 1, requisitos: [] },
+
+      { codigo: "DBIO1076", nombre: "🔬🧪Bioquímica General", semestre: 2, requisitos: ["DQUI1035", "DBIO1069"] },
+      { codigo: "MEVEB001", nombre: "🔬Histología Veterinaria", semestre: 2, requisitos: ["DBIO1069"] },
+      { codigo: "MEVEB002", nombre: "Bienestar Animal", semestre: 2, requisitos: ["MEVE0120"] },
+      { codigo: "MEVE0005", nombre: "Zoología Veterinaria", semestre: 2, requisitos: [] },
+      { codigo: "MEVE0007", nombre: "🦴Anatomía Veterinaria I", semestre: 2, requisitos: ["DBIO1069"] },
+      { codigo: "MEVE0121", nombre: "🗽Inglés Instrumental I", semestre: 2, requisitos: [] },
+
+      { codigo: "FILS0001", nombre: "Antropología", semestre: 3, requisitos: [] },
+      { codigo: "DBIO1031", nombre: "🍃Ecología", semestre: 3, requisitos: [] },
+      { codigo: "MEVE0010", nombre: "🧠Fisiología Animal", semestre: 3, requisitos: ["DBIO1076", "MEVEB001", "MEVEB002"] },
+      { codigo: "MEVE0011", nombre: "🦴Anatomía Veterinaria II", semestre: 3, requisitos: ["MEVE0007"] },
+      { codigo: "MEVE0012", nombre: "🔬🧫Microbiología General", semestre: 3, requisitos: ["DBIO1076"] },
+      { codigo: "MEVE0017", nombre: "😷Inmunología Veterinaria", semestre: 3, requisitos: ["MEVEB001", "MEVEB002"] },
+      { codigo: "MEVE0018", nombre: "🧬Genética Ganadera", semestre: 3, requisitos: ["DMAEM001", "DBIO1069"] },
+      { codigo: "MEVE0122", nombre: "🗽Inglés Instrumental II", semestre: 3, requisitos: ["MEVE0121"] },
+
+     
+    { codigo: "FILS0002", nombre: "⚖️Ética", semestre: 4, requisitos: ["FILS0001"] },
+{ codigo: "MEVE0009", nombre: "🌱Producción de Forrajes", semestre: 4, requisitos: ["DBIO1031"] },
+{ codigo: "MEVE0015", nombre: "🧠🦆Fisiopatología Animal", semestre: 4, requisitos: ["MEVE0010", "MEVE0017", "MEVE0011"] },
+{ codigo: "MEVE0020", nombre: "🧬♂️♀️♀Reproducción Animal", semestre: 4, requisitos: ["MEVE0010", "MEVE0011"] },
+{ codigo: "MEVE0027", nombre: "🦠Enfermedades Parasitarias", semestre: 4, requisitos: ["MEVE0005"] },
+{ codigo: "MEVE0028", nombre: "🧟Enfermedades Infecciosas", semestre: 4, requisitos: ["MEVE0012", "MEVE0017"] },
+{ codigo: "MEVE0082", nombre: "🦆Patología General", semestre: 4, requisitos: ["MEVE0010", "MEVE0011"] },
+
+{ codigo: "MEVE0101", nombre: "Pasantía Intrahospitalaria III", semestre: 4.5, requisitos: ["MEVE0099"] },
+{ codigo: "MEVE0103", nombre: "Pasantía Intrahospitalaria IV", semestre: 4.5, requisitos: ["MEVE0101"] },
+
+{ codigo: "ELEFORINO1", nombre: "Electivo Formación Integral", semestre: 5, requisitos: ["FILS0002"] },
+{ codigo: "MEVE0019", nombre: "⚕️⚖️🍎Nutrición y Alimentación Animal", semestre: 5, requisitos: ["MEVE0009"] },
+{ codigo: "MEVE0021", nombre: "🦆Patología Especial de Sistemas", semestre: 5, requisitos: ["MEVE0082"] },
+{ codigo: "MEVE0022", nombre: "💊Farmacología Veterinaria I", semestre: 5, requisitos: ["MEVE0015", "MEVE0028"] },
+{ codigo: "MEVE0024", nombre: "♂️Andrología", semestre: 5, requisitos: ["MEVE0015", "MEVE0020"] },
+{ codigo: "MEVE0036", nombre: "🍖Sistema de Producción de Carne", semestre: 5, requisitos: ["MEVE0009", "MEVE0018", "MEVE0020", "MEVEB002"] },
+{ codigo: "MEVE0046", nombre: "📈Economía", semestre: 5, requisitos: ["DMAEM001", "MEVE0009"] },
+
+{ codigo: "MEVE0104", nombre: "Pasantía Intrahospitalaria V", semestre: 5.5, requisitos: ["MEVE0103"] },
+{ codigo: "MEVE0105", nombre: "Pasantía Intrahospitalaria VI", semestre: 5.5, requisitos: ["MEVE0104"] },
+
+{ codigo: "MEVE0025", nombre: "👨🏻‍⚕️🦆Cirugía General y Patología Quirúrgica", semestre: 6, requisitos: ["MEVE0021", "MEVE0022"] },
+{ codigo: "MEVE0026", nombre: "💊Farmacología Veterinaria II", semestre: 6, requisitos: ["MEVE0022", "MEVE0027"] },
+{ codigo: "MEVE0030", nombre: "🥛Sistema de Producción de Leche", semestre: 6, requisitos: ["MEVE0018", "MEVE0019", "MEVE0020"] },
+{ codigo: "MEVE0088", nombre: "🍖Tecnología de la Carne", semestre: 6, requisitos: ["MEVE0036"] },
+{ codigo: "MEVE0124", nombre: "♀️🩺Ginecología y Obstetricia", semestre: 6, requisitos: ["MEVE0024"] },
+{ codigo: "MEVE0125", nombre: "📈Contabilidad y Administración", semestre: 6, requisitos: ["MEVE0046"] },
+
+{ codigo: "MEVE0106", nombre: "Pasantía Intrahospitalaria VII", semestre: 6.5, requisitos: ["MEVE0105"] },
+{ codigo: "MEVE0107", nombre: "Pasantía Intrahospitalaria VIII", semestre: 6.5, requisitos: ["MEVE0106"] },
+
+{ codigo: "MEVE0149", nombre: "Práctica Curricular Externa Intersemestral I", semestre: 6.9, requisitos: ["MEVE0107"] },
+
+{ codigo: "MEVE0029", nombre: "👨🏻‍⚕️Cirugía Especial", semestre: 7, requisitos: ["MEVE0025", "MEVE0026"] },
+{ codigo: "MEVE0032", nombre: "Exploración Clínica de los Animales", semestre: 7, requisitos: ["MEVE0021", "MEVE0124"] },
+{ codigo: "MEVE0049", nombre: "📊Análisis Estadístico", semestre: 7, requisitos: ["MEVE0125"] },
+{ codigo: "MEVE0058", nombre: "🐟Sistema de Producción de Peces", semestre: 7, requisitos: ["MEVE0019", "MEVE0020"] },
+{ codigo: "MEVE0093", nombre: "🥛Tecnología de la Leche", semestre: 7, requisitos: ["MEVE0030", "MEVE0088"] },
+{ codigo: "MEVE0126", nombre: "Conservación de la Vida Silvestre", semestre: 7, requisitos: ["DBIO1031"] },
+
+{ codigo: "MEVE0108", nombre: "Pasantía Intrahospitalaria IX", semestre: 7.5, requisitos: ["MEVE0107"] },
+{ codigo: "MEVE0109", nombre: "Pasantía Intrahospitalaria X", semestre: 7.5, requisitos: ["MEVE0108"] },
+
+{ codigo: "MEVE0150", nombre: "Práctica Curricular Externa Intersemestral II", semestre: 7.9, requisitos: ["MEVE0093"] },
+{ codigo: "MEVE0031", nombre: "☠️Toxicología Veterinaria", semestre: 8, requisitos: ["MEVE0026"] },
+{ codigo: "MEVE0033", nombre: "🩺Métodos Complementarios de Diagnóstico", semestre: 8, requisitos: ["MEVE0002", "MEVE0032"] },
+{ codigo: "MEVE0034", nombre: "👨🏻‍⚕️Medicina Interna", semestre: 8, requisitos: ["MEVE0029", "MEVE0032"] },
+{ codigo: "MEVE0035", nombre: "🕵️Metodología de la Investigación Científica", semestre: 8, requisitos: ["MEVE0049"] },
+{ codigo: "MEVE0045", nombre: "⚕️Epidemiología y Salud Pública", semestre: 8, requisitos: ["MEVE0028", "MEVE0049"] },
+{ codigo: "MEVE0127", nombre: "Formulación y Evaluación de Proyectos", semestre: 8, requisitos: ["MEVE0125"] },
+
+{ codigo: "MEVE0110", nombre: "Pasantía Intrahospitalaria XI", semestre: 8.5, requisitos: ["MEVE0109"] },
+{ codigo: "MEVE0111", nombre: "Pasantía Intrahospitalaria XII", semestre: 8.5, requisitos: ["MEVE0110"] },
+
+{ codigo: "MEL0151", nombre: "Práctica Curricular Externa Intersemestral III", semestre: 8.9, requisitos: ["MEVE0034"] },
+
+{ codigo: "MEVE0044", nombre: "🦎🦔Clínica de Animales Silvestres y Exóticos", semestre: 9, requisitos: ["MEVE0031", "MEVE0033", "MEVE0034", "MEVE0126"] },
+{ codigo: "MEVE0056", nombre: "🐎Clínica de Equinos y Rumiantes🐄", semestre: 9, requisitos: ["MEVE0031", "MEVE0033", "MEVE0034"] },
+{ codigo: "MEVE0057", nombre: "🐕🐈Clínica de Animales de Compañía", semestre: 9, requisitos: ["MEVE0031", "MEVE0033", "MEVE0034"] },
+{ codigo: "MEVE0062", nombre: "⚖️Legislación y Deontología", semestre: 9, requisitos: ["MEVE0045"] },
+{ codigo: "MEVE0090", nombre: "📖Memoria de Título", semestre: 9, requisitos: ["MEVE0111"] },
+{ codigo: "MEVE0092", nombre: "Inocuidad de los Alimentos", semestre: 9, requisitos: ["MEVE0031", "MEVE0045", "MEVE0093"] },
+
+{ codigo: "MEVE0137", nombre: "Pasantía Intrahospitalaria XIII", semestre: 9.5, requisitos: ["MEVE0111"] },
+{ codigo: "MEVE0138", nombre: "Pasantía Intrahospitalaria XIV", semestre: 9.5, requisitos: ["MEVE0137"] },
+{ codigo: "MEVE0139", nombre: "🌙Turno Hospitalario I", semestre: 9.5, requisitos: ["MEVE0111"] },
+
+{ codigo: "ELEMEVE01", nombre: "Electivo I", semestre: 10, requisitos: [] },
+{ codigo: "ELEMEVE02", nombre: "Electivo II", semestre: 10, requisitos: [] },
+{ codigo: "ELEMEVE03", nombre: "Electivo III", semestre: 10, requisitos: [] },
+{ codigo: "MEVE0128", nombre: "Internado", semestre: 10, requisitos: ["MEVE0044", "MEVE0056", "MEVE0057"] },
+{ codigo: "MEVE0140", nombre: "🌙Turno Hospitalario II", semestre: 10.5, requisitos: ["MEVE0111"] } ];
+
+    const aprobados = new Set(JSON.parse(localStorage.getItem("aprobadosVeterinaria") || "[]"));
+
+    function renderMalla() {localStorage.setItem("aprobadosVeterinaria", JSON.stringify([...aprobados]));
+      const contenedor = document.getElementById('contenedor');
+      contenedor.innerHTML = '';
+
+      for (let semestre = 1; semestre <= 10; semestre++) {
+        const bloque = document.createElement('div');
+        bloque.className = 'semestre';
+        const titulo = document.createElement('h2');
+        titulo.textContent = `📆 Semestre ${semestre}`;
+        bloque.appendChild(titulo);
+
+        cursos.filter(c => c.semestre === semestre).forEach(curso => {
+          const habilitado = curso.requisitos.every(r => aprobados.has(r));
+          const div = document.createElement('div');
+          div.className = `curso ${!habilitado ? 'bloqueado' : ''}`;
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.disabled = !habilitado;
+          checkbox.checked = aprobados.has(curso.codigo);
+          checkbox.onchange = () => {
+            if (checkbox.checked) aprobados.add(curso.codigo);
+            else aprobados.delete(curso.codigo);
+            renderMalla();
+          };
+
+          const label = document.createElement('label');
+          label.textContent = `${curso.nombre} (${curso.codigo})`;
+
+          div.appendChild(checkbox);
+          div.appendChild(label);
+          bloque.appendChild(div);
+        });
+
+        contenedor.appendChild(bloque);
+      }
+    }
+
+    renderMalla();
+  </script>
+</body>
+</html>
